@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stemlokalen</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="js/leaflet-plugins/markers/MarkerCluster.Default.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .l {
+          color: #369;
+        }
+        a.address {
+          color: #404040;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id='map'></div>
+    <script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+    <script src="js/leaflet-plugins/markers/leaflet.markercluster.js"></script>
+    <script>
+        L.mapbox.accessToken = 'pk.eyJ1IjoibWlibG9uIiwiYSI6ImNpemprYWpiMzAwNm0zMnFuNDJncmtxNzYifQ.SZpvjYrbZ5bTV6E-s5ghTQ';
+        // Replace 'mapbox.streets' with your map id.
+        var mapboxTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=' + L.mapbox.accessToken, {
+            attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+
+        var map = L.map('map')
+            .addLayer(mapboxTiles)
+            .setView([51.4422995, 5.4799333], 13);
+        var geojson = L.mapbox.featureLayer('data/stemlokalen.geojson');
+        var markers = L.markerClusterGroup();
+        map.addLayer(markers);
+        geojson.on('ready', function(e){
+          markers.clearLayers();
+          e.target.eachLayer(function(layer) {
+            layer.bindPopup(
+              "<h5>" + layer.feature.properties.Name + "</h5>" +
+              '<div><span class="l">adres: </span><a class="address" title="Open in Google Maps" href="https://maps.google.com/?daddr=' +
+                layer._latlng.lat + ',' + layer._latlng.lng +
+              '">' + layer.feature.properties.address + '</a></div>' +
+              '<div><span class="l">gemeente: </span>' + layer.feature.properties.gemeente + '</div>' +
+              '<div><span class="l">gmcode: </span>' + layer.feature.properties.gmcode + "</div>" +
+              '<div><span class="l">hoofdstem kieskring: </span>' + layer.feature.properties.hoofdstem_kieskring + "</div>"
+            );
+            markers.addLayer(layer);
+          });
+        });
+
+    </script>
+
+</body>
+
+</html>
