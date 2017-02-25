@@ -44,20 +44,22 @@
         var map = L.map('map')
             .addLayer(mapboxTiles)
             .setView([51.4422995, 5.4799333], 13);
-        var geojson = L.mapbox.featureLayer('data/stemlokalen.geojson');
+        //http://data.openstate.eu/dataset/fc7efef1-6738-46db-9a83-c5205407e57c/resource/875d7a2c-c8d3-4c4e-8897-0376ce4308cc/download/stembureaus-2302.geojson
+        var geojson = L.mapbox.featureLayer('data/stembureaus-2302.geojson.json');
         var markers = L.markerClusterGroup();
         map.addLayer(markers);
         geojson.on('ready', function(e){
           markers.clearLayers();
           e.target.eachLayer(function(layer) {
             layer.bindPopup(
-              "<h5>" + layer.feature.properties.Name + "</h5>" +
+              "<h5>" + layer.feature.properties.stembureau + "</h5>" +
               '<div><span class="l">adres: </span><a class="address" title="Open in Google Maps" href="https://maps.google.com/?daddr=' +
                 layer._latlng.lat + ',' + layer._latlng.lng +
-              '">' + layer.feature.properties.address + '</a></div>' +
+              '">' + layer.feature.properties.adres + '</a></div>' +
+              '<div><span class="l">plaats: </span>' + layer.feature.properties.plaats + '</div>' +
               '<div><span class="l">gemeente: </span>' + layer.feature.properties.gemeente + '</div>' +
               '<div><span class="l">gmcode: </span>' + layer.feature.properties.gmcode + "</div>" +
-              '<div><span class="l">hoofdstem kieskring: </span>' + layer.feature.properties.hoofdstem_kieskring + "</div>"
+              '<div><span class="l">hoofdstem kieskring: </span>' + layer.feature.properties["hoofdstem kieskring"] + "</div>"
             );
             markers.addLayer(layer);
           });
