@@ -8,6 +8,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
     <link rel="stylesheet" href="js/leaflet-plugins/markers/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="js/leaflet-plugins/leaflet-search.css" />
     <style>
         body {
             margin: 0;
@@ -34,6 +35,7 @@
     <div id='map'></div>
     <script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
     <script src="js/leaflet-plugins/markers/leaflet.markercluster.js"></script>
+    <script src="js/leaflet-plugins/leaflet-search.min.js"></script>
     <script>
         L.mapbox.accessToken = 'pk.eyJ1IjoibWlibG9uIiwiYSI6ImNpemprYWpiMzAwNm0zMnFuNDJncmtxNzYifQ.SZpvjYrbZ5bTV6E-s5ghTQ';
         // Replace 'mapbox.streets' with your map id.
@@ -65,7 +67,19 @@
             markers.addLayer(layer);
           });
         });
+        var searchControl = new L.Control.Search({
+          layer: markers,
+          propertyName: 'stembureau',
+          textPlaceholder: 'Zoek...',
+          zoom: 17,
+          position: 'topleft'
+        });
 
+        searchControl.on('search:locationfound', function(e) {
+          if(e.layer._popup)
+            e.layer.openPopup();
+        });
+        map.addControl( searchControl );  //inizialize search control
     </script>
 
 </body>
